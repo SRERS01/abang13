@@ -1,0 +1,42 @@
+wget https://github.com/projectdiscovery/katana/releases/download/v1.6.1/katana_1.6.1_linux_amd64.zip
+unzip katana_1.6.1_linux_amd64.zip
+sudo mv katana /usr/local/bin/
+katana -version
+To run Katana, use the basic terminal command structure followed by flags to control the crawl depth and output targets.
+## Basic Crawl
+To scan a single website and discover its basic links, endpoints, and assets:
+
+katana -u https://example.com
+
+## Crawl Multiple Targets
+To scan multiple websites at the same time, save your URLs into a text file (e.g., targets.txt) and pass it to the tool:
+
+katana -list targets.txt
+
+## Advanced Scanning Configurations
+Combine flags to maximize discovery:
+
+* Deep Scan with JS Parsing (Finds endpoints hidden inside JavaScript files):
+
+katana -u https://example.com -jc -d 3
+
+* Headless Mode (Uses a real background browser to find links rendered by heavy single-page apps like React or Angular):
+
+katana -u https://example.com -headless
+
+* Save Output to a File (Saves all discovered endpoints to a clean text file):
+
+katana -u https://example.com -o results.txt
+
+
+------------------------------
+## Commonly Used Flags
+
+* -u : The target URL to scan.
+* -jc : Parses and extracts endpoints from JavaScript files (similar to LinkFinder).
+* -d : Set crawl depth limit (default is 3).
+* -headless : Enables headless browser crawling.
+* -o : File path to write output results.
+
+Would you like to know how to filter out specific file extensions (like .png or .css) from your scan results, or do you need to pipe the output into LinkFinder?
+
