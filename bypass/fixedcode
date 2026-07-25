@@ -1,0 +1,19 @@
+Yes, exactly. Fixing the source code is the only permanent solution to eliminate Remote Code Execution (RCE).
+RCE is a structural flaw. Relying entirely on filters, blacklists, or Web Application Firewalls (WAFs) creates a false sense of security. As you saw in the previous examples, an attacker can almost always find a creative combination of characters to slip past a firewall. [1, 2, 3] 
+Here is why restrictions fail and how you must actually fix the problem.
+## Why Restrictions Fail
+
+* The Infinite Bypass Problem: Blacklists only block what you know about. You cannot predict every possible way a Linux, Windows, or macOS shell can interpret numbers, variables, and wildcards. [4] 
+* Context Confusion: Firewalls look at the raw network data. The server's underlying operating system engine interprets that data much differently, leaving a gap where obfuscated code can sneak through.
+* Maintenance Burden: A system built on strict input restrictions requires constant updates to match new bypass techniques. Eventually, a legitimate user input gets blocked, forcing developers to weaken the rules. [5] 
+
+## How to Fix RCE Permanently
+To secure your login endpoint, apply these strict architectural fixes directly to your backend code:
+
+* Eliminate System Calls Entirely: Never pass user input (username or password) into functions like exec(), system(), eval(), passthru(), or popen(). Web applications almost never need to talk directly to the operating system command line.
+* Enforce Strict Input Whitelists: Instead of trying to block "bad" characters, only allow "good" characters. For a numerical username like 652223518, enforce a regular expression rule that only accepts digits ^[0-9]+$. If a user passes a semicolon or a backslash, reject the request instantly. [6, 7] 
+* Use Object-Relational Mapping (ORM): If the backend uses the username to search a database, look up users via safe parameterization libraries (like Prisma, Hibernate, or Entity Framework) rather than concatenating strings. [8] 
+* Run with Low Privileges: Run your web application under an isolated user account with minimal permissions (e.g., www-data). Block that user from ever launching system tools like /bin/sh or cmd.exe. [9, 10, 11] 
+
+Would you like to see a quick code example showing the dangerous way vs. the secure way to write this specific authentication logic in your preferred backend language?
+

