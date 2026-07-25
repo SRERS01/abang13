@@ -1,0 +1,34 @@
+To find hidden links and secrets using ProjectDiscovery's Katana, LinkFinder, and SecretFinder, you need to pipe the crawled URLs from Katana directly into the Python tools.
+Here is the quickest way to chain these tools together in your terminal.
+## 1. Katana to LinkFinder
+LinkFinder analyzes JavaScript files to find endpoints. You must configure Katana to output only JS files, then pass them to LinkFinder using xargs. [1] 
+
+katana -u https://example.com -field file -extension js -silent | xargs -I % python3 LinkFinder.py -i % -o cli
+
+## 2. Katana to SecretFinder
+SecretFinder looks for sensitive data (API keys, tokens) inside JavaScript files. Use the same piping logic. [2, 3] 
+
+katana -u https://example.com -field file -extension js -silent | xargs -I % python3 SecretFinder.py -i % -o cli
+
+## 3. All-in-One Automation (Recommended)
+If you want to run a single command that saves Katana's output to a text file and runs both tools automatically, use this script:
+
+# 1. Crawl and save JS links
+katana -u https://example.com -field file -extension js -silent -o js_links.txt
+# 2. Run LinkFinder on all discovered linkswhile read -r url; do python3 LinkFinder.py -i "$url" -o cli; done < js_links.txt
+# 3. Run SecretFinder on all discovered linkswhile read -r url; do python3 SecretFinder.py -i "$url" -o cli; done < js_links.txt
+
+## Critical Setup Flags Used
+
+* -field file: Tells Katana to output the raw file URL.
+* -extension js: Filters the crawler to only output JavaScript files.
+* -silent: Suppresses the banner so only clean URLs are piped.
+
+To help fine-tune this command, please let me know:
+
+* Are you looking to save the outputs directly to specific log files?
+* Do you need help passing authentication headers or cookies through Katana?
+* Are your Python tools installed globally or in specific folders?
+
+
+
