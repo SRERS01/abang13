@@ -1,0 +1,1 @@
+while read -r url; do python3 linkfinder.py -i "$url" -o cli >> linkfinder_results.txt; done < ~/yo.txt

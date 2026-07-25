@@ -1,0 +1,34 @@
+To scan all service versions running on an IP address, use Nmap (Network Mapper). It is the industry-standard tool for banner grabbing and service version detection. [1, 2, 3, 4, 5] 
+## The Recommended Command
+Run this command in your terminal (requires sudo for accurate OS and service tracking): [6, 7] 
+
+sudo nmap -sV -sC -p- -T4 192.168.1.1
+
+(Replace 192.168.1.1 with your target IP address) [8, 9] 
+## Breakdown of the Flags Used
+
+* -sV: Service Version Detection. Probes open ports to determine exactly what software and version is running.
+* -sC: Default Scripts. Runs safe, built-in Nmap scripts to gather deeper configuration info and vulnerability data from the services.
+* -p-: Scan All Ports. Forces Nmap to scan all 65,535 possible ports instead of just the top 1,000.
+* -T4: Timing Template. Speeds up the scan so it finishes faster without being overly aggressive. [10, 11, 12, 13, 14] 
+
+------------------------------
+## Alternative: Fast Scan First (Saves Time)
+Scanning all 65,535 ports with version detection can take a long time. A faster strategy is to find open ports first, then scan only those open ports for versions: [15, 16, 17] 
+
+# 1. Quick port discovery (saves open ports to open_ports.txt)
+sudo nmap -p- --open -oG open_ports.txt 192.168.1.1
+# 2. Targeted version scan on found ports
+sudo nmap -sV -sC -p $(awk '/Ports:/{gsub(/[a-zA-Z\/]/,""); print $5}' open_ports.txt | tr '\n' ',') 192.168.1.1
+
+## Alternative: Masscan (For massive networks or speed)
+If you need to scan an entire subnet or multiple IPs incredibly quickly, use Masscan to find open ports, then feed them into Nmap. [18, 19, 20, 21, 22] 
+
+sudo masscan -p1-65535 192.168.1.1 --rate 1000
+
+To help you with your infrastructure or penetration testing, please let me know:
+
+* Do you want to save the scan results to a text, XML, or grepable file? [2]
+* Are you trying to scan a single IP or a large range/CIDR block of IPs? [2]
+* Do you need help identifying vulnerabilities based on the version numbers found? [2]
+
