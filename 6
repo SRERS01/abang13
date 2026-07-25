@@ -1,0 +1,53 @@
+To save the output of your command, append the -o (output) flag. You can also combine it with -j (JSON Lines) to get structured data. [1] 
+## Standard Text Format
+Save the crawled URLs straight into a plain text file: [2, 3] 
+
+katana -u https://example.com -jc -d 3 -o results.txt
+
+## JSON Lines Format
+Save the results as structured JSON, which includes extra metadata about the endpoints: [1, 4] 
+
+katana -u https://example.com -jc -d 3 -j -o results.json
+
+## Terminal Redirection (Alternative)
+Use standard terminal operators if you prefer not to use the built-in flag:
+
+katana -u https://example.com -jc -d 3 > results.txt
+
+If you want to save the entire raw HTTP request and response traffic for debugging, you can add -sr to save them inside a designated directory. [1, 5] 
+Would you like to know how to filter specific file extensions or restrict the scope of what gets saved? [1, 5] 
+
+To filter specific file extensions or restrict your crawling scope in ProjectDiscovery Katana, you can append the following flags to your command. [1] 
+## 1. Filter File Extensions
+You can choose to exclusively match (include) specific extensions, or filter (exclude) heavy or irrelevant assets. [2] 
+
+* Match specific extensions (-em): Only output endpoints ending with these extensions.
+
+katana -u https://example.com -jc -d 3 -em js,json,php -o results.txt
+
+* Filter out extensions (-ef): Exclude common clutter like images or styling sheets.
+
+katana -u https://example.com -jc -d 3 -ef wp-content,png,css,jpg,svg -o results.txt
+
+[2, 3] 
+
+## 2. Restrict Crawling Scope
+By default, Katana scopes its crawl to the target's root domain and its subdomains (*.domain). You can modify this behavior: [4] 
+
+* Strict Subdomain Matching (-fs fqdn): Force the crawler to only follow links matching the exact subdomain provided, ignoring other subdomains.
+
+katana -u https://example.com -jc -d 3 -fs fqdn -o results.txt
+
+* Regex In-Scope Control (-cs): Force Katana to only follow paths matching a regular expression (e.g., only paths containing /api/ or /login/).
+
+katana -u https://example.com -jc -d 3 -cs "(/api/|/v1/)" -o results.txt
+
+* Regex Out-of-Scope Control (-cos): Tell the crawler to skip specific paths completely to avoid logging out or hitting destructive endpoints.
+
+katana -u https://example.com -jc -d 3 -cos "(logout|signout|delete)" -o results.txt
+
+[2, 4, 5] 
+
+If you are dealing with a massive list of URLs, let me know if you want to see how to pass a file input to these scope options. [4] 
+
+
