@@ -1,0 +1,12 @@
+Reward standards
+Our maximum bounty is $5,500 USD 
+The following table lists typical reward ranges by severity, and the actual rewards may fluctuate based on the average value, depending on the actual application scenario of the vulnerability and the level of detail in your report.
+Vulnerability Type	Vulnerability Description	Average Bounty for high-priority asset	Average Bounty for lower-priority asset
+Remote Code Execution (RCE)	Access to system privileges directly,Including but not limited to command execution, code execution, Webshell, etc.	$5500	$1500
+SQL Injection	SQL injection vulnerability, which can obtain sensitive database information	$2500	$1000
+Sensitive Data Exposure	Leakage of a large amount of user plaintext sensitive information, including but not limited to: mobile phone number, bank card information, ID card information, order information, email, address, etc.	$2000	$800
+Server Side Request Forgery (SSRF)	An SSRF vulnerability that can access trip's intranet and has echo content	$1500	$500
+Authorization Flaw	Serious unauthorized sensitive operations, including but not limited to unauthorized modification of important information on accounts, ordinary operations on orders, and modification of important business configurations.	$1000	$300
+Logic flaw 	logical design flaws and process flaws	$500	$200
+Local file read	Vulnerability to read arbitrary system files, which can read important sensitive files.	$500	$200
+Stored Cross Site Scripting	Only Store xss, not reflective/dom xss. For the storage xss problem of multiple pages caused by the same data, it can only be considered as one.	$200	$50

@@ -1,0 +1,38 @@
+Vulnerability Classification & Severity Levels
+We assess and categorize reported vulnerabilities based on their potential impact.  This helps ensure that rewards are proportionate to the severity and real-world risk of each finding.
+🟣 Extreme
+Reward: $30,000 to $100,000  
+
+    Access to financial services with the ability to withdraw funds from blockchain wallets that have a significant impact on the business
+    A large-scale compromise of user wallets
+
+🔴 Critical
+Reward: $3,000 to $29,999 
+
+    Remote Code Execution (RCE) with direct access to core infrastructure, servers, or sensitive user data
+    Full system or infrastructure compromise
+    Unrestricted access to highly sensitive user data (e.g., financial data)
+
+🟠 High
+Reward: $500 to $3,000 
+
+    Privilege escalation across users, roles, or system boundaries
+    Unauthorized access to sensitive or restricted data
+    RCEs with limited impact due to containment, lack of access to valuable data, or other mitigating factors
+    Bypassing major access controls or business logic
+
+🟡 Medium
+Reward: $200 to $500 
+
+    Cross-Site Scripting (XSS)
+    SQL injection with limited scope or controlled impact
+    Vulnerabilities with moderate business or user impact
+    Vulnerabilities requiring significant user interaction or affecting non-critical components
+
+🔵 Low
+Reward: $100 to $200 
+
+    Exposure of non-sensitive information (e.g., user-agent logs, internal metadata)
+    Low-impact misconfigurations (e.g., non-exploitable headers)
+
+    ⚠️ Note: Not all RCEs are considered critica
