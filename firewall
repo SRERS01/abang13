@@ -1,0 +1,29 @@
+Firewalls are categorized by how they inspect traffic (their technology) and where they are deployed (their architecture). [1, 2, 3, 4] 
+Here is the complete classification of every firewall type that exists.
+## 1. Types by Inspection Technology (How They Work)
+
+* Packet Filtering Firewalls: The oldest type. They inspect only basic surface data like source/destination IP addresses, protocols, and port numbers. They do not look inside the actual data packet. [5, 6, 7, 8, 9] 
+* Circuit-Level Gateways: They verify the transmission protocol handshake (like a TCP 3-way handshake) to ensure a session is legitimate before opening a connection. They do not inspect the packet contents. [10, 11, 12, 13] 
+* Stateful Inspection Firewalls: They track the "state" of active connections. They remember past packets and match incoming traffic against an open session table. If traffic arrives out of order or unprompted, it is dropped. [14, 15, 16, 17, 18] 
+* Application-Level Gateways (Proxy Firewalls): They act as a middleman. The user connects to the proxy, the proxy inspects the actual data payload at the application layer, and then the proxy establishes a fresh connection to the server on the user's behalf. [19, 20, 21, 22, 23] 
+* Next-Generation Firewalls (NGFW): The modern corporate standard. They combine stateful inspection with deep packet inspection (DPI), integrated Intrusion Prevention Systems (IPS), identity awareness (user tracking), and encrypted traffic inspection. [24, 25, 26, 27, 28] 
+* Web Application Firewalls (WAF): Specialized firewalls designed specifically to protect web apps and APIs. They intercept HTTP/HTTPS traffic to block web-specific attacks like SQL Injection, Cross-Site Scripting (XSS), and the Command Injections we discussed earlier. [29, 30, 31, 32, 33] 
+
+------------------------------
+## 2. Types by Deployment Architecture (Where They Live)
+
+* Hardware Firewalls: Physical appliances installed directly between the internal network router and the external internet gateway. They handle massive traffic volumes without draining server computing resources. [34, 35, 36, 37, 38] 
+* Software (Host-Based) Firewalls: Applications installed directly onto individual servers or endpoints (like Windows Defender Firewall or Linux iptables/nftables). They protect that specific machine from internal network lateral movement. [39, 40, 41, 42, 43] 
+* Cloud Firewalls / Firewall-as-a-Service (FWaaS): Decentralized firewalls hosted entirely in the cloud (like AWS WAF or Cloudflare). They scale dynamically with web traffic and block malicious inputs at the network edge before it hits enterprise infrastructure. [44, 45, 46, 47, 48] 
+* Virtual Firewalls: Digital software appliances deployed inside virtualized data centers or private clouds (like VMware environments) to monitor and isolate traffic moving between different virtual machines. [49, 50, 51, 52, 53] 
+
+------------------------------
+## 3. Specialty Firewalls
+
+* Database Firewalls: Specialized monitors that sit directly in front of database engines to block unauthorized SQL queries or database-specific exploits.
+* Container/Microsegmentation Firewalls: Cloud-native tools built to monitor the highly rapid, internal traffic running between isolated Docker containers or Kubernetes pods. [54, 55] 
+
+------------------------------
+Would you like to explore how a WAF specifically analyzes a JSON authentication payload like yours, or should we look at how to set up a host-based software firewall on Linux?
+
+

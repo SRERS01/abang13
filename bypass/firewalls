@@ -1,0 +1,2 @@
+A Web Application Firewall (WAF) secures applications by normalizing inputs, parsing JSON payloads, and scanning for attack signatures in parameters before allowing requests to reach the server. As a final defense, a host-based firewall like UFW on Linux blocks malicious traffic by restricting all default incoming traffic and opening only essential operational ports. For a comprehensive guide on setting up a Linux host-based firewall, consult the UFW documentation on Ubuntu.
+
